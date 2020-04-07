@@ -41,14 +41,14 @@
                     author: ''
                 }
             });
-            let article = new Article();
+            const article = new Article();
 
-            let ArticleList = Backbone.Collection.extend({
+            const ArticleList = Backbone.Collection.extend({
                 url: 'https://www.reddit.com/r/worldnews/new.json',
                 model: Article
             });
 
-            let articleList = new ArticleList();
+            const articleList = new ArticleList();
 
             const TableRow = Backbone.View.extend({
                 tagName: 'tr',
@@ -64,7 +64,7 @@
                 }
             });
 
-            let HomePage = Backbone.View.extend({
+            const HomePage = Backbone.View.extend({
                 initialize: function () {
                     $('#get-started').html('Fetch Data');
                     this.tableBody = $('#table-body');
