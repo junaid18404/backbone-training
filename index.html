@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Scrapper</title>
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <script src="node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="node_modules/underscore/underscore.js"></script>
+        <script src="node_modules/backbone/backbone.js"></script>
+    </head>
+    <body>
+
+    <div class="container text-center">
+        <h1>TODO App</h1>
+        <button id='get-started' class="btn btn-lg btn-info" style="vertical-align: bottom"></button>
+        <br>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Index</th>
+                <th>Title</th>
+                <th>Score</th>
+                <th>Url</th>
+                <th>Author</th>
+            </tr>
+            </thead>
+            <tbody id="table-body">
+            </tbody>
+        </table>
+    </div>
+<!--    <script type="module" src="js/views/homepage.js"></script>-->
+    <script>
+        $(document).ready(async () => {
+
+            let Article = Backbone.Model.extend({
+                defaults:{
+                    index: 0,
+                    title: '',
+                    score: 0,
+                    url: '',
+                    author: ''
+                }
+            });
+            let article = new Article();
+
+            let ArticleList = Backbone.Collection.extend({
+                url: 'https://www.reddit.com/r/worldnews/new.json',
+                model: Article
+            });
+
+            let articleList = new ArticleList();
+
+            const TableRow = Backbone.View.extend({
+                tagName: 'tr',
+                render: function() {
+                    this.$el.html(
+                        `<td>${this.model.get('index')}</td>
+                        <td>${this.model.get('title')}</td>
+                        <td>${this.model.get('score')}</td>
+                        <td><a href="${this.model.get('url')}" target="_blank">${this.model.get('url')}</a></td>
+                        <td>${this.model.get('author')}</td>`
+                    );
+                    return this;
+                }
+            });
+
+            let HomePage = Backbone.View.extend({
+                initialize: function () {
+                    $('#get-started').html('Fetch Data');
+                    this.tableBody = $('#table-body');
+                },
+
+                events: {
+                    'click #get-started' : `fetchArticlesInTable`,
+                },
+
+                fetchArticlesInTable: async function() {
+                    const articleData = (await articleList.fetch())['data']['children'];
+                    this.setArticleData(articleData);
+                    articleList.forEach((article) => {
+                        const row = new TableRow({model: article});
+                        this.tableBody.append(row.render().el);
+                    });
+                },
+
+                setArticleData: function (articleData) {
+                    articleList.set(articleData.map((article, index) => {
+                        return new Article({
+                            index: index + 1,
+                            title: article.data.title,
+                            score: article.data.score,
+                            url: article.data.url,
+                            author: article.data.author
+                        })
+                    }));
+                }
+            });
+            new HomePage({
+                el: 'body',
+                model: article
+            });
+        });
+    </script>
+    </body>
+</html>
