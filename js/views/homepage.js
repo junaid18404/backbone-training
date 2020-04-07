@@ -1,20 +1,42 @@
-// import article from "../models/article";
-//
-// let HomePage = Backbone.View.extend({
-//     initialize: function () {
-//         $('#get-started').html('Fetch Data');
-//     },
-//
-//     // events: {
-//     //     'click #get-started' : `fetchArticles`,
-//     // },
-//     //
-//     // fetchArticles: async function() {
-//     //     console.log('fetch data called');
-//     //     console.log(await this.model.fetchData());
-//     // }
-// });
-// let homePage = new HomePage({
-//     el: 'body',
-//     model: article
-// });
+var app = app || {};
+
+(async () => {
+    const articleList = new app.ArticleList();
+    const TableRow = app.TableRow;
+
+    const HomePage = Backbone.View.extend({
+        initialize: function () {
+            $('#get-started').html('Fetch Data');
+            this.tableBody = $('#table-body');
+        },
+
+        events: {
+            'click #get-started' : `fetchArticlesInTable`,
+        },
+
+        fetchArticlesInTable: async function() {
+            const articleData = (await articleList.fetch())['data']['children'];
+            this.setArticleData(articleData);
+            articleList.forEach((article) => {
+                const row = new TableRow({model: article});
+                this.tableBody.append(row.render().el);
+            });
+        },
+
+        setArticleData: function (articleData) {
+            articleList.set(articleData.map((article, index) => {
+                return new app.Article({
+                    index: index + 1,
+                    title: article.data.title,
+                    score: article.data.score,
+                    url: article.data.url,
+                    author: article.data.author
+                })
+            }));
+        }
+    });
+    new HomePage({
+        el: 'body',
+        model: app.Article
+    });
+})();

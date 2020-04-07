@@ -28,78 +28,9 @@
             </tbody>
         </table>
     </div>
-<!--    <script type="module" src="js/views/homepage.js"></script>-->
-    <script>
-        $(document).ready(async () => {
-
-            let Article = Backbone.Model.extend({
-                defaults:{
-                    index: 0,
-                    title: '',
-                    score: 0,
-                    url: '',
-                    author: ''
-                }
-            });
-            const article = new Article();
-
-            const ArticleList = Backbone.Collection.extend({
-                url: 'https://www.reddit.com/r/worldnews/new.json',
-                model: Article
-            });
-
-            const articleList = new ArticleList();
-
-            const TableRow = Backbone.View.extend({
-                tagName: 'tr',
-                render: function() {
-                    this.$el.html(
-                        `<td>${this.model.get('index')}</td>
-                        <td>${this.model.get('title')}</td>
-                        <td>${this.model.get('score')}</td>
-                        <td><a href="${this.model.get('url')}" target="_blank">${this.model.get('url')}</a></td>
-                        <td>${this.model.get('author')}</td>`
-                    );
-                    return this;
-                }
-            });
-
-            const HomePage = Backbone.View.extend({
-                initialize: function () {
-                    $('#get-started').html('Fetch Data');
-                    this.tableBody = $('#table-body');
-                },
-
-                events: {
-                    'click #get-started' : `fetchArticlesInTable`,
-                },
-
-                fetchArticlesInTable: async function() {
-                    const articleData = (await articleList.fetch())['data']['children'];
-                    this.setArticleData(articleData);
-                    articleList.forEach((article) => {
-                        const row = new TableRow({model: article});
-                        this.tableBody.append(row.render().el);
-                    });
-                },
-
-                setArticleData: function (articleData) {
-                    articleList.set(articleData.map((article, index) => {
-                        return new Article({
-                            index: index + 1,
-                            title: article.data.title,
-                            score: article.data.score,
-                            url: article.data.url,
-                            author: article.data.author
-                        })
-                    }));
-                }
-            });
-            new HomePage({
-                el: 'body',
-                model: article
-            });
-        });
-    </script>
+    <script type="text/javascript" src="js/models/article.js"></script>
+    <script type="text/javascript" src="js/collections/articleList.js"></script>
+    <script type="text/javascript" src="js/views/tableRow.js"></script>
+    <script type="text/javascript" src="js/views/homepage.js"></script>
     </body>
 </html>
