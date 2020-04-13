@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Scrapper</title>
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <script src="node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="node_modules/underscore/underscore.js"></script>
+        <script src="node_modules/backbone/backbone.js"></script>
+    </head>
+    <body>
+
+    <div class="container text-center">
+        <h1>TODO App</h1>
+        <button id='get-started' class="btn btn-lg btn-info" style="vertical-align: bottom"></button>
+        <br>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Index</th>
+                <th>Title</th>
+                <th>Score</th>
+                <th>Url</th>
+                <th>Author</th>
+            </tr>
+            </thead>
+            <tbody id="table-body">
+            </tbody>
+        </table>
+    </div>
+    <script type="text/javascript" src="js/models/article.js"></script>
+    <script type="text/javascript" src="js/collections/articleList.js"></script>
+    <script type="text/javascript" src="js/views/tableRow.js"></script>
+    <script type="text/javascript" src="js/views/homepage.js"></script>
+    </body>
+</html>
